@@ -4,7 +4,7 @@
 #                                                                   #
 #   Name: get_congestion_ports.sh                                   #
 #   Date: 30/10/2017                                                #
-#   Author: Jesus Gomez Email: jesus.gomez@dell.com                 #   
+#   Author: Jesus Gomez Email: jgomezuzq@gmail.com                  #   
 #   Description: filters congestion & latency ports and gets WWNs   # 
 #   & zoning involved.                                              #
 #                                                                   #
@@ -30,10 +30,11 @@ KEY="$HOME/.ssh/id_dsa"
 #               userconfig --add monuser -r user -d "monitoring user for scripting" -p <pass>
 USER='monuser'
 SWITCHES=''
-SWITCHES_CLASSIC='180.16.142.104 180.16.138.27 180.16.142.98 180.16.138.21 180.16.142.107 180.16.138.24 180.16.142.101 180.16.138.18'
-SWITCHES_PREDES='22.2.31.32 22.2.31.35 22.2.31.38 22.2.31.41'
-SWITCHES_FLOW='180.16.245.235 180.16.245.232 180.16.245.241 180.16.245.238'
-SWITCHES_MERCADOS='22.2.252.67 22.2.252.18 22.2.252.15 22.2.252.12'
+# ENTER THE IPS OF YOUR SAN SWITCHES ACCORDING TO YOUR OWN ENVIRONMENT, SEPARATED BY BLANK SPACES.
+SWITCHES_CLASSIC='X.X.X.X Y.Y.Y.Y'
+SWITCHES_PREDES='X.X.X.X Y.Y.Y.Y'
+SWITCHES_FLOW='X.X.X.X Y.Y.Y.Y'
+SWITCHES_MERCADOS='X.X.X.X Y.Y.Y.Y'
 SAN='[classic|mercados|predes|flow]'
 DOMAIN='no'
 VF_PROD_DOMAIN='126'
@@ -62,14 +63,14 @@ ZONEFILTER='[[:xdigit:]]{6};[[:xdigit:]]{2}(:([[:xdigit:]]){2}){7}'
 #### FUNCTIONS
 
 show_syntax (){
-
+    # SAMPLE USAGE.
     echo "$0: Usage error. The correct syntax is:"
     echo "$0: sh get_congestion_ports.sh [classic|mercados|predes|flow]"
     return 0
 }
 
 check_parameters (){
-
+    # CHECKS GLOBAL PARAMETERS (SAN ID).
     san=$1
     if ! `echo $san | grep -i -q -E "$SAN"`
     then
@@ -101,7 +102,7 @@ get_log_data (){
 }
 
 get_ports (){
-
+    # RETRIEVES AFECTED PORTS.
     log=$1
     portlist=$2
     > $portlist
@@ -117,7 +118,7 @@ get_ports (){
 }
 
 get_stats (){
-
+    # COLLECTS PORT STATS.
     switchip=$1
     portlist=$2
     pstats=$3
@@ -156,7 +157,7 @@ get_stats (){
 }
 
 get_alias(){
-
+    # GET WWPN ALIAS, IF IT EXISTS.
     wwn=$1
     alifile=$2
     ali=`cat $alifile | grep -i alias -A1| grep -i $wwn -B1 | grep -o -E "$ALIAS"`
@@ -166,7 +167,7 @@ get_alias(){
 
 
 get_connected_devices (){
-
+    # LISTS DEVICES CONNECTED TO THE SPECIFIED PORT AND THE TARGETS THEY ARE ZONED TO.
     switch=$1
     swname=$2
     aliases_f=$3
@@ -233,7 +234,7 @@ get_connected_devices (){
 }
 
 get_port_info (){
-
+    # RETRIEVES PORT DETAILS.
     switchip=$1
     swn=$2
     portlist=$3
